@@ -67,7 +67,10 @@ int main()
 	// setting up window
 	wHND = GetStdHandle(STD_OUTPUT_HANDLE);
 	rHND = GetStdHandle(STD_INPUT_HANDLE);
-	SMALL_RECT windowSize = { 0,0,WIDTH - 1,HEIGHT - 1 };
+	SMALL_RECT windowSize;
+	windowSize.Top = windowSize.Left = 0;
+	windowSize.Right = WIDTH - 1;
+	windowSize.Bottom = HEIGHT - 1;
 
 	SetConsoleWindowInfo(wHND, TRUE, &windowSize);
 
