@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <wchar.h>
 #include <thread>
-
+#include <cwchar>
 using namespace std;
 
 // setting up width and height of window
@@ -64,6 +64,20 @@ int main()
 {
 	// set the mode to write unicode character
 	_setmode(_fileno(stdout), _O_U16TEXT);
+
+	// set the font famiily to arial unicode ms instead of consolos 
+	/*
+	 CONSOLE_FONT_INFOEX cfi;
+	 cfi.cbSize = sizeof(cfi);
+	 cfi.nFont = 0;
+	 cfi.dwFontSize.X = 0;                   
+	 cfi.dwFontSize.Y = 16;                  
+	 cfi.FontFamily = FF_DONTCARE;
+	 cfi.FontWeight = FW_NORMAL;
+	 wcscpy_s(cfi.FaceName, L"Consolas"); 
+	 SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfi);
+	*/
+	
 	// setting up window
 	wHND = GetStdHandle(STD_OUTPUT_HANDLE);
 	rHND = GetStdHandle(STD_INPUT_HANDLE);
@@ -157,12 +171,12 @@ int main()
 		int score = 0;
 		while (GameRunning)
 		{
-			///Sleep(50);
+			
 			ClearBuffer(consoleBuffer);
 
 			// responding to events
 			auto t1 = chrono::system_clock::now();
-			while ((chrono::system_clock::now() - t1) < 80ms)
+			while ((chrono::system_clock::now() - t1) < 75ms)
 			{
 				DWORD numberOfEventsHappend = 0;
 				GetNumberOfConsoleInputEvents(rHND, &numberOfEventsHappend);
@@ -173,7 +187,7 @@ int main()
 					ReadConsoleInput(rHND, eventBuffer, numberOfEventsHappend, &numberOfEventsRead);
 					for (int i = 0; i < numberOfEventsRead; i++)
 					{
-						if (eventBuffer[i].EventType == KEY_EVENT)
+						if (eventBuffer[i].Event.KeyEvent.bKeyDown)
 						{
 							if (eventBuffer[i].Event.KeyEvent.wVirtualKeyCode == VK_LEFT && SnakeDirection != 2)
 							{
@@ -227,7 +241,7 @@ int main()
 			for (auto i = Snake.begin(); i != Snake.end(); i++)
 			{
 
-				consoleBuffer[i->X + WIDTH * i->Y].Char.UnicodeChar = L'\x25ac';
+				consoleBuffer[i->X + WIDTH * i->Y].Char.UnicodeChar = L'\x004f';
 			}
 			consoleBuffer[Snake.front().X + WIDTH * Snake.front().Y].Char.UnicodeChar = L'@';
 
@@ -260,7 +274,7 @@ int main()
 				score++;
 				consoleBuffer[FoodX + WIDTH * FoodY].Char.UnicodeChar = L' ';
 				for(int i = 0; i < 3; i++) Snake.push_back(COORD{ Snake.back().X, Snake.back().Y });
-				
+			
 				
 			}
 			//collision detetction of the snake on boundaries
